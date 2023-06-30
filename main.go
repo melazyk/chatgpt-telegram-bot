@@ -6,6 +6,8 @@ import (
 	"net/url"
 	"os"
 
+	"net/http"
+	_ "net/http/pprof"
 	"time"
 
 	"github.com/caarlos0/env/v7"
@@ -37,6 +39,11 @@ func main() {
 		fmt.Printf("%+v\n", err)
 		os.Exit(1)
 	}
+
+	// enable pprof
+	go func() {
+		fmt.Println(http.ListenAndServe("localhost:6060", nil))
+	}()
 
 	baseURL, err := url.JoinPath(cfg.OpenAIBaseURL, "/v1")
 	if err != nil {
